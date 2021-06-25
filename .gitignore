@@ -1,0 +1,6 @@
+.DS_Store
+.vscode
+symbols.json
+
+docs/js/*.js
+docs/js/*.map
