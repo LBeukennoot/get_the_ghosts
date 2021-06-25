@@ -2,5 +2,4 @@
 .vscode
 symbols.json
 
-docs/js/*.js
 docs/js/*.map
