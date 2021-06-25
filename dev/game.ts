@@ -24,6 +24,7 @@ class Game {
         this.grid.classList.add('grid-container')
         document.body.appendChild(this.grid)
 
+        //creating chamber
         this.createChamber()
         this.gameLoop()
     }
