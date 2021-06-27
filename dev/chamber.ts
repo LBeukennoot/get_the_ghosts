@@ -3,77 +3,81 @@ import { Player } from "./player.js"
 
 export class Chamber {
 
-    private chamber : HTMLElement
-    private chamberHitbox : HTMLElement
     private player : Player
-    private ghost : Ghost[] = []
-    private div : HTMLElement
-    private hits : number = 0
-    private level : number
+    private ghosts : Ghost[] = []
 
-    constructor(div : HTMLElement, level : number) {
+    private chamber : HTMLElement
+    private timer : HTMLElement
+
+    private points : number = 0
+
+    constructor() {
         console.log('Created chamber!')
-        this.level = level
 
-        //create chamber and add to center div
+        //emptying body
+        document.body.innerHTML = ""
+
+        //creating centered chamber image
+        let container = document.createElement('div')
+        container.classList.add('card')
+
         this.chamber = document.createElement('chamber')
-        div.appendChild(this.chamber)
+        container.appendChild(this.chamber)
+        document.body.appendChild(container)
 
-        //create chamber hitbox, according to chamber image
-        this.chamberHitbox = document.createElement('div')
-        this.chamberHitbox.classList.add('chamber-hitbox')
-        this.chamber.appendChild(this.chamberHitbox)
-
-        //create ghost and player
+        //creating player
         this.player = new Player(this.chamber)
 
-        for(let i = 0; i < (this.level / 2); i++){
-            this.ghost.push(new Ghost(this.chamberHitbox))
+        //adding ghosts
+        this.createGhosts(1)
+
+        //creating timer
+        this.timer = document.createElement('timer')
+        this.timer.innerText = '0s'
+        this.chamber.appendChild(this.timer)
+    }
+
+    public createGhosts(amount : number) : void {
+        for (let i = 0; i < Math.floor(amount); i++) {
+            this.ghosts.push(new Ghost(this.chamber))
         }
+        this.points += Math.floor(amount)
     }
 
-    public removeChamber() : void{
-        this.chamber.remove()
+    public getPoints() : number {
+        return this.points
     }
 
-    public getHits() : number {
-        return this.hits
-    }
-
-    public getGhosts() : number{
-        return this.ghost.length
-    }
-
-    public update() {
+    public update(time : number) : void {
         this.player.update()
 
-        for (const ghost of this.ghost) {
+        //making sure player can't leave room
+        if (this.player.getX() < 1) {
+            this.player.setHorizontalSpeed(-5)
+        } else if (this.player.getX() > (this.chamber.clientWidth - this.player.getRectangle().width)) {
+            this.player.setHorizontalSpeed(5)
+        } else if (this.player.getY() < 0) {
+            this.player.setVerticalSpeed(-5)
+        } else if (this.player.getY() > (document.body.clientHeight - this.player.getRectangle().height)) {
+            this.player.setVerticalSpeed(5)
+        }
+
+        //updating ghosts
+        for (const ghost of this.ghosts) {
             ghost.update()
 
+            //checking collision between player and ghosts
             if(this.checkCollision(this.player.getRectangle(), ghost.getRectangle())) {
                 ghost.killGhost()
-                this.hits++
+                this.points -= 1
             }
         }
 
-        //check if player is on the left side
-        if (this.player.getX() < 141) {
-            this.player.setHorizontalSpeed(-5)
-            //check if the player is on the right side
-        } else if (this.player.getX() > this.chamberHitbox.clientWidth + 141 - this.player.getRectangleWidth()) {
-            this.player.setHorizontalSpeed(5)
-        }
+        this.timer.innerText = `${Math.floor(time)}s`
 
-        //check if player is on the top
-        if (this.player.getY() < 80) {
-            this.player.setVerticalSpeed(-5)
-            //check if player is on the bottom
-        } else if (this.player.getY() > this.chamberHitbox.clientHeight - 50 + this.player.getRectangleHeight()) {
-            this.player.setVerticalSpeed(5)
-        }
     }
 
-    private checkCollision(a: ClientRect, b: ClientRect) {
+    private checkCollision(a: ClientRect, b: ClientRect) : boolean {
         return (a.left <= b.right &&
             b.left <= a.right &&
             a.top <= b.bottom &&

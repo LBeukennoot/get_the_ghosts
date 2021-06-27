@@ -39,16 +39,6 @@ export class Player extends GameObject {
         this.y -= speed
     }
 
-    public getRectangleWidth(): number {
-        return this.object.clientWidth
-    }
-
-    public getRectangleHeight() : number {
-        return this.object.clientHeight
-    }
-
-
-
     public update() : void {
         
         this.y += this.verticalSpeed

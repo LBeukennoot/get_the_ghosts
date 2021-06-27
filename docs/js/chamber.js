@@ -1,51 +1,53 @@
 import { Ghost } from "./ghost.js";
 import { Player } from "./player.js";
 export class Chamber {
-    constructor(div, level) {
-        this.ghost = [];
-        this.hits = 0;
+    constructor() {
+        this.ghosts = [];
+        this.points = 0;
         console.log('Created chamber!');
-        this.level = level;
+        document.body.innerHTML = "";
+        let container = document.createElement('div');
+        container.classList.add('card');
         this.chamber = document.createElement('chamber');
-        div.appendChild(this.chamber);
-        this.chamberHitbox = document.createElement('div');
-        this.chamberHitbox.classList.add('chamber-hitbox');
-        this.chamber.appendChild(this.chamberHitbox);
+        container.appendChild(this.chamber);
+        document.body.appendChild(container);
         this.player = new Player(this.chamber);
-        for (let i = 0; i < (this.level / 2); i++) {
-            this.ghost.push(new Ghost(this.chamberHitbox));
+        this.createGhosts(1);
+        this.timer = document.createElement('timer');
+        this.timer.innerText = '0s';
+        this.chamber.appendChild(this.timer);
+    }
+    createGhosts(amount) {
+        for (let i = 0; i < Math.floor(amount); i++) {
+            this.ghosts.push(new Ghost(this.chamber));
         }
+        this.points += Math.floor(amount);
     }
-    removeChamber() {
-        this.chamber.remove();
+    getPoints() {
+        return this.points;
     }
-    getHits() {
-        return this.hits;
-    }
-    getGhosts() {
-        return this.ghost.length;
-    }
-    update() {
+    update(time) {
         this.player.update();
-        for (const ghost of this.ghost) {
+        if (this.player.getX() < 1) {
+            this.player.setHorizontalSpeed(-5);
+        }
+        else if (this.player.getX() > (this.chamber.clientWidth - this.player.getRectangle().width)) {
+            this.player.setHorizontalSpeed(5);
+        }
+        else if (this.player.getY() < 0) {
+            this.player.setVerticalSpeed(-5);
+        }
+        else if (this.player.getY() > (document.body.clientHeight - this.player.getRectangle().height)) {
+            this.player.setVerticalSpeed(5);
+        }
+        for (const ghost of this.ghosts) {
             ghost.update();
             if (this.checkCollision(this.player.getRectangle(), ghost.getRectangle())) {
                 ghost.killGhost();
-                this.hits++;
+                this.points -= 1;
             }
         }
-        if (this.player.getX() < 141) {
-            this.player.setHorizontalSpeed(-5);
-        }
-        else if (this.player.getX() > this.chamberHitbox.clientWidth + 141 - this.player.getRectangleWidth()) {
-            this.player.setHorizontalSpeed(5);
-        }
-        if (this.player.getY() < 80) {
-            this.player.setVerticalSpeed(-5);
-        }
-        else if (this.player.getY() > this.chamberHitbox.clientHeight - 50 + this.player.getRectangleHeight()) {
-            this.player.setVerticalSpeed(5);
-        }
+        this.timer.innerText = `${Math.floor(time)}s`;
     }
     checkCollision(a, b) {
         return (a.left <= b.right &&

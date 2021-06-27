@@ -6,6 +6,11 @@ body {
     overflow:hidden;
     margin:0px; padding:0px;
     color: white;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
 }
 
 .grid-container {
@@ -61,9 +66,10 @@ ghost {
     position: absolute;
 }
 
-.time {
+timer {
     position: absolute;
-    top: 50px;
+    font-size: 4vh;
+    margin: 4vh;
 }
 
 .replay-button {
@@ -74,6 +80,22 @@ ghost {
 
 .transparent {
     filter:opacity(0)
+}
+
+.keys {
+    width: 40vh;
+    margin: 10vh;
+    /* position: absolute; */
+}
+
+.card {
+    width: 100vw;
+    height: 100vh;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    flex-direction: column;
 }
 
 @media only screen and (max-width: 725px) {

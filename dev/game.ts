@@ -1,127 +1,77 @@
 import { Chamber } from "./chamber.js"
+import { EndScreen } from "./endScreen.js"
+import { StartScreen } from "./startScreen.js"
 
 class Game {
 
-    private chamber : Chamber[] = []
-    private grid : HTMLElement
-    private points : HTMLElement
-    private time : HTMLElement
-    private div1 : HTMLElement
-    private div : HTMLElement
-    private playAgainButton : HTMLElement
+    private chamber : Chamber
+    private startScreen : StartScreen
+    private endScreen : EndScreen
 
-    private timer : number = 1000
-    private playtime : boolean = true
-    private hits : number = 0
+    private time : number = 0
+    private bestTime : number = 0
+    private ghostSpawnTimer : number = 0
+    private gamestate : string = 'init'
     private music : any = new Audio('images/theme.mp3')
-    private level : number = 1
 
     constructor() {
         console.log('Created game!')
-        
-        //create grid to center the game
-        this.grid = document.createElement('div')
-        this.grid.classList.add('grid-container')
-        document.body.appendChild(this.grid)
 
-        //creating chamber
-        this.createChamber()
-        this.gameLoop()
+        //create start screen
+        this.startScreen = new StartScreen()
+
+        //add event listener to screen
+        document.addEventListener('click', (e : MouseEvent) => this.clickHandler(e))
     }
 
-    private createChamber() {
+    private gameLoop() : void {
+        if (this.gamestate != 'gameover') {
+            //timing
+            this.time += 0.015
+            this.ghostSpawnTimer += 0.005
 
-        //fill grid
-        //left
-        this.div1 = document.createElement('div')
-        this.div1.classList.add('grid-item');
+            //updating chamber
+            this.chamber.update(this.time)
+    
+            //checking to spawn new ghosts
+            if (this.ghostSpawnTimer > 1) {
+                let amount = (Math.random() * 8.2)
+                this.chamber.createGhosts(amount)
+                this.ghostSpawnTimer = 0
 
-        this.points = document.createElement('p')
-        this.points.style.color = 'white'
-        this.points.innerText = `kills: 0`
-        this.points.classList.add('kills')
-        this.div1.appendChild(this.points)
+                //checking if there are too many ghosts
+                if (this.chamber.getPoints() >= 10) {
+                    this.gamestate = 'gameover'
+                    this.endScreen = new EndScreen(this.time, this.bestTime)
+                    this.music.pause()
 
-        this.time = document.createElement('p')
-        this.time.style.color = 'white'
-        this.time.innerText = `time: 0`
-        this.time.classList.add('time')
-        this.div1.appendChild(this.time)
-
-        this.createGameOverScreen()
-        //middle
-        this.div = document.createElement('div')
-        this.div.classList.add('grid-item');
-
-        this.chamber.push(new Chamber(this.div, this.level))
-        //right
-        let div3 = document.createElement('div')
-        div3.classList.add('grid-item');
-
-        //and append them
-        this.grid.appendChild(this.div1)
-        this.grid.appendChild(this.div)
-        this.grid.appendChild(div3)
-
-        this.music.loop = true
-
-    }
-
-    private gameLoop() {
-        
-        //checking if timer is over
-        if (this.timer < 0) {
-            //timer is over so game is over
-            this.playtime = false
-            this.music.pause()
-            this.chamber[this.chamber.length - 1].removeChamber()
-            if (!this.playtime) {
-                this.playAgainButton.classList.remove('transparent')
+                    //changing best time if it was better
+                    if (this.time > this.bestTime) {
+                        this.bestTime = this.time
+                    }
+                }
             }
-        } else {
-            //timer is not over so count down and show time
-            this.timer -= (this.level / 4 + 0.8)
-            this.time.innerText = `time: ${Math.round(this.timer/60)}`
+    
         }
 
-        //if there is time left
-        if (this.playtime) {
-            //update chamber
-            this.chamber[this.chamber.length - 1].update()
-            //this.music.play()
-            //if all ghosts are gone
-            if (this.chamber[this.chamber.length - 1].getHits() == this.chamber[this.chamber.length - 1].getGhosts()) {
-
-                //remove old chamber and make a new one
-                this.hits = this.hits + this.chamber[this.chamber.length - 1].getHits()
-
-                this.chamber[this.chamber.length - 1].removeChamber()
-                this.chamber.push(new Chamber(this.div, this.level))
-                this.level = this.level + 1
-                //this.music.play()
-                this.timer += (this.level * 50)
-
-            //if there are still ghosts left
-            } else {
-
-                //there is a hit so add it! :)
-                this.points.innerText = `hits: ${this.hits + this.chamber[this.chamber.length - 1].getHits()}`
-            }
-        }
+        //TODO show time
 
         requestAnimationFrame(() => this.gameLoop())
     }
 
-    private createGameOverScreen() {
-        this.playAgainButton = document.createElement('div')
-        this.playAgainButton.classList.add('transparent','replay-button')
-        this.playAgainButton.innerText = 'Play again!'
-        this.playAgainButton.addEventListener('click', this.buttonHandler)
-        this.div1.appendChild(this.playAgainButton)
-    }
+    private clickHandler(e : any) : void {
 
-    private buttonHandler() {
-        location.reload()
+        if(e.target.id == 'startbutton') {
+            this.music.play()
+            this.chamber = new Chamber()
+            this.gameLoop()
+            this.gamestate = 'playing'
+        } else if (e.target.id == 'againbutton') {
+            this.music.play()
+            this.chamber = new Chamber()
+            this.gamestate = 'playing'
+            this.time = 0
+        }
     }
 
 

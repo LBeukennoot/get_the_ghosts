@@ -25,12 +25,6 @@ export class Player extends GameObject {
     setVerticalSpeed(speed) {
         this.y -= speed;
     }
-    getRectangleWidth() {
-        return this.object.clientWidth;
-    }
-    getRectangleHeight() {
-        return this.object.clientHeight;
-    }
     update() {
         this.y += this.verticalSpeed;
         this.x += this.horizontalSpeed;

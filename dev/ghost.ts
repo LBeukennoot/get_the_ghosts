@@ -5,6 +5,7 @@ export class Ghost extends GameObject {
     private movement : string
     private speed : number = 1
     private swoosh : any
+    private killed : boolean = false
 
     constructor(chamber : HTMLElement) {
         super(chamber)
@@ -17,7 +18,7 @@ export class Ghost extends GameObject {
         this.object.style.transform = `translate(${this.x}px, ${this.y}px)`
     }
 
-    private randomizer() {
+    private randomizer() : void {
         let random = 0
         this.speed = 0
         //where will the ghost come from?
@@ -53,9 +54,7 @@ export class Ghost extends GameObject {
             }
     }
 
-
-
-    public update() {
+    public update() : void {
 
         switch (this.movement) {
             case "up":
@@ -79,11 +78,12 @@ export class Ghost extends GameObject {
         }
     }
 
-    public killGhost() {
+    public killGhost() : void {
         this.swoosh = new Audio('images/swoosh.mp3')
         this.swoosh.volume = 0.3
         this.swoosh.playbackRate = 0.9
         this.swoosh.play()
+        this.killed = true
         this.object.remove()
     }
 

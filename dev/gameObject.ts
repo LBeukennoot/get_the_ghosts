@@ -7,10 +7,9 @@ export class GameObject {
 
     constructor(chamber : HTMLElement) {
         this.div = chamber
-        console.log('game object created')
     }
 
-    public update() {
+    public update() : void {
         this.object.style.transform = `translate(${this.x}px, ${this.y}px)`
     }
     

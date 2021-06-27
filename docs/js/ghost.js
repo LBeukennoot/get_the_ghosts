@@ -3,6 +3,7 @@ export class Ghost extends GameObject {
     constructor(chamber) {
         super(chamber);
         this.speed = 1;
+        this.killed = false;
         console.log('Created ghost!');
         this.object = document.createElement('ghost');
         this.div.appendChild(this.object);
@@ -62,6 +63,7 @@ export class Ghost extends GameObject {
         this.swoosh.volume = 0.3;
         this.swoosh.playbackRate = 0.9;
         this.swoosh.play();
+        this.killed = true;
         this.object.remove();
     }
 }

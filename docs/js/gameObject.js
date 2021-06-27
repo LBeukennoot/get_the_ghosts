@@ -3,7 +3,6 @@ export class GameObject {
         this.y = 0;
         this.x = 0;
         this.div = chamber;
-        console.log('game object created');
     }
     update() {
         this.object.style.transform = `translate(${this.x}px, ${this.y}px)`;
