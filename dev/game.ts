@@ -16,7 +16,8 @@ class Game {
 
     constructor() {
         console.log('Created game!')
-
+        this.music.loop = true
+        
         //create start screen
         this.startScreen = new StartScreen()
 
@@ -28,7 +29,7 @@ class Game {
         if (this.gamestate != 'gameover') {
             //timing
             this.time += 0.015
-            this.ghostSpawnTimer += 0.009
+            this.ghostSpawnTimer += 0.009 + (this.time / 5)
 
             //updating chamber
             this.chamber.update(this.time)

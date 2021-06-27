@@ -9,13 +9,14 @@ class Game {
         this.gamestate = 'init';
         this.music = new Audio('images/theme.mp3');
         console.log('Created game!');
+        this.music.loop = true;
         this.startScreen = new StartScreen();
         document.addEventListener('click', (e) => this.clickHandler(e));
     }
     gameLoop() {
         if (this.gamestate != 'gameover') {
             this.time += 0.015;
-            this.ghostSpawnTimer += 0.009;
+            this.ghostSpawnTimer += 0.009 + (this.time / 5);
             this.chamber.update(this.time);
             if (this.ghostSpawnTimer > 1) {
                 let amount = (Math.random() * 9);
