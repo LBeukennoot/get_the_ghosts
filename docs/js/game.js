@@ -19,7 +19,7 @@ class Game {
             this.ghostSpawnTimer += 0.005;
             this.chamber.update(this.time);
             if (this.ghostSpawnTimer > 1) {
-                let amount = (Math.random() * 9 + (this.time / 10));
+                let amount = (Math.random() * 9 + (this.time / 20));
                 this.chamber.createGhosts(amount);
                 this.ghostSpawnTimer = 0;
                 if (this.chamber.getPoints() >= 10) {
