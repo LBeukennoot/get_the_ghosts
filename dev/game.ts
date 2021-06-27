@@ -35,7 +35,7 @@ class Game {
     
             //checking to spawn new ghosts
             if (this.ghostSpawnTimer > 1) {
-                let amount = (Math.random() * 8.2)
+                let amount = (Math.random() * 9)
                 this.chamber.createGhosts(amount)
                 this.ghostSpawnTimer = 0
 
