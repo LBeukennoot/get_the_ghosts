@@ -15,7 +15,7 @@ class Game {
     gameLoop() {
         if (this.gamestate != 'gameover') {
             this.time += 0.015;
-            this.ghostSpawnTimer += 0.005;
+            this.ghostSpawnTimer += 0.009;
             this.chamber.update(this.time);
             if (this.ghostSpawnTimer > 1) {
                 let amount = (Math.random() * 9);

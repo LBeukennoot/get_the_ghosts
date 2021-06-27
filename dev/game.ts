@@ -28,7 +28,7 @@ class Game {
         if (this.gamestate != 'gameover') {
             //timing
             this.time += 0.015
-            this.ghostSpawnTimer += 0.005
+            this.ghostSpawnTimer += 0.009
 
             //updating chamber
             this.chamber.update(this.time)
