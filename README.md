@@ -1,1 +1,3 @@
-DISCLAIMER: geen enkele audio in deze game is door mij ge maakt of in mijn bezit.
+DISCLAIMER: None of the audio files are made by me or are in posession of me.
+
+Play game: https://lbeukennoot.github.io/get_the_ghosts/
