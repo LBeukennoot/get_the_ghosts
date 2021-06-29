@@ -2,11 +2,8 @@ import { GameObject } from "./gameObject.js"
 
 export class Player extends GameObject {
 
-    //private x : number = 321
-    //private y : number = 310
     private verticalSpeed : number = 0
     private horizontalSpeed : number = 0
-    //private div : HTMLElement
 
     constructor(chamber : HTMLElement) {
         super(chamber)
